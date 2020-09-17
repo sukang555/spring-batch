@@ -1,4 +1,4 @@
-package com.su.springbatch.config.job;
+package com.su.springbatch.job;
 
 import com.su.springbatch.utils.BeanUtil;
 import lombok.extern.slf4j.Slf4j;

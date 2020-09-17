@@ -1,4 +1,4 @@
-package com.su.springbatch.config.job.step;
+package com.su.springbatch.job.demojob.step;
 
 import com.su.springbatch.entity.EncryptLog;
 import org.springframework.batch.item.ItemProcessor;
