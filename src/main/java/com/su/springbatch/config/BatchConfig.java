@@ -1,6 +1,7 @@
 package com.su.springbatch.config;
 
 import org.springframework.batch.core.configuration.annotation.BatchConfigurer;
+import org.springframework.batch.core.configuration.support.MapJobRegistry;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
@@ -55,4 +56,5 @@ public class BatchConfig implements BatchConfigurer {
     public JobExplorer getJobExplorer() throws Exception {
         return null;
     }
+
 }

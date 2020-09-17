@@ -1,39 +1,58 @@
 package com.su.springbatch.manager;
 
-import com.su.springbatch.utils.BeanUtil;
+
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.boot.CommandLineRunner;
+
 
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
-import java.util.Collection;
+import java.util.Map;
 
 
 /**
  * @Author: sukang
  * @Date: 2020/9/15 15:51
  */
-@ManagedBean
+
 @Slf4j
-public class JobManager implements CommandLineRunner {
+@ManagedBean
+public class JobManager {
+
+    @Resource
+    private Map<String, Job> jobs;
 
     @Resource
     private JobLauncher jobLauncher;
 
-    @Resource
-    private JobRegistry jobRegistry;
 
-
-    @Override
-    public void run(String... args) throws Exception {
-
-        Collection<String> jobNames = jobRegistry.getJobNames();
-
-        for (String jobName : jobNames) {
-            log.info("job-{}" ,jobName);
-        }
-
+    public boolean isExit(String jobName){
+        return jobs.containsKey(jobName);
     }
+
+    public boolean isNotExit(String jobName){
+        return !isExit(jobName);
+    }
+
+    public Job getJob(String jobName){
+        return jobs.get(jobName);
+    }
+
+
+    public void runJob(String jobName, JobParameters jobParam){
+        if (isExit(jobName)){
+            try {
+                jobLauncher.run(getJob(jobName), jobParam);
+            } catch (Exception e) {
+                log.error("job({}),执行异常", jobName, e);
+            }
+        }
+    }
+
+
+
 }

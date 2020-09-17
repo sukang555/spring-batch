@@ -8,7 +8,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sukang
@@ -40,6 +46,28 @@ public class BeanUtil {
             logger.error("json转换异常",e);
         }
         return "";
+    }
+
+    public static Map<String,Object> bean2map(Object bean) throws Exception{
+        Map<String,Object> map = new HashMap<>(bean.getClass().getDeclaredFields().length);
+        //获取JavaBean的描述器
+        BeanInfo b = Introspector.getBeanInfo(bean.getClass(),Object.class);
+        //获取属性描述器
+        PropertyDescriptor[] pds = b.getPropertyDescriptors();
+        //对属性迭代
+        for (PropertyDescriptor pd : pds) {
+            //属性名称
+            String propertyName = pd.getName();
+            //属性值,用getter方法获取
+            Method m = pd.getReadMethod();
+
+            //用对象执行getter方法获得属性值
+            Object properValue = m.invoke(bean);
+
+            //把属性名-属性值 存到Map中
+            map.put(propertyName, properValue);
+        }
+        return map;
     }
 
 }

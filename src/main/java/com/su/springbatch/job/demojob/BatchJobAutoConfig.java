@@ -44,9 +44,8 @@ public class BatchJobAutoConfig {
 
 
     @Bean
-    public Job dealJob(@Named("jobExecutionListener") JobExecutionListener jobExecutionListener,
+    public Job demoJob(@Named("jobExecutionListener") JobExecutionListener jobExecutionListener,
                        @Named("dealStep") Step dealStep){
-
 
         return jobBuilders.get("demoJob")
                 .start(dealStep)
@@ -55,7 +54,14 @@ public class BatchJobAutoConfig {
     }
 
 
-
+    /**
+     * 1、Skip:如果处理过程中某条记录是错误的,如CSV文件中格式不正确的行,那么可以直接跳过该对象,继续处理下一个。
+     *      * 2、在chunk元素上定义skip-limit属性,告诉Spring最多允许跳过多少个items,超过则job失败
+     *      * 3、Restart:如果将job状态存储在数据库中,而一旦它执行失败,	那么就可以选择重启job实例,	并继续上次的执行位置。
+     *      * 4、最后,对于执行失败的job作业,我们可以重新启动,并让他们从上次断开的地方继续执行。要达到这一点,只需要使用和上次 一模一样的参数来启动job,
+     *      * 则Spring	Batch会自动从数据库中找到这个实例然后继续执行。你也可以拒绝重启,或者参数控 制某个
+     *      * job中的一个tep可以重启的次数(一般来说多次重试都失败了,那我们可能需要放弃。)
+     */
     @Bean
     public Step dealStep(@Named("itemReader") ItemReader<EncryptLog> itemReader,
                          @Named("itemProcessor") ItemProcessor<EncryptLog, EncryptLog> itemProcessor,
